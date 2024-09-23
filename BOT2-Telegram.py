@@ -95,7 +95,9 @@ async def recognize_song(update: Update, context: CallbackContext):
         try:
             audio_url = track_info['preview_url']
             audio_stream = requests.get(audio_url, stream=True)
-            with open(f'audio_{update.message.message_id}.mp3', 'wb') as f:
+            # Set the filename to include artist name and track title
+            mp3_filename = f"{artist_name} - {track_name}.mp3"
+            with open(mp3_filename, 'wb') as f:
                 for chunk in audio_stream.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
@@ -105,7 +107,7 @@ async def recognize_song(update: Update, context: CallbackContext):
             return
 
         # Send the mp3 file
-        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(f'audio_{update.message.message_id}.mp3', 'rb'), caption=f"Artist: {artist_name}\nTrack: {track_name}\nAlbum: {album_name}")
+        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(mp3_filename, 'rb'), caption=f"Artist: {artist_name}\nTrack: {track_name}\nAlbum: {album_name}")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="I couldn't find any songs matching your query.")
 
@@ -134,7 +136,9 @@ async def search_song(update: Update, context: CallbackContext):
         try:
             audio_url = track_info['preview_url']
             audio_stream = requests.get(audio_url, stream=True)
-            with open(f'audio_{update.message.message_id}.mp3', 'wb') as f:
+            # Set the filename to include artist name and track title
+            mp3_filename = f"{artist_name} - {track_name}.mp3"
+            with open(mp3_filename, 'wb') as f:
                 for chunk in audio_stream.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
@@ -144,7 +148,7 @@ async def search_song(update: Update, context: CallbackContext):
             return
 
         # Send the mp3 file
-        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(f'audio_{update.message.message_id}.mp3', 'rb'), caption=f"Artist: {artist_name}\nTrack: {track_name}\nAlbum: {album_name}")
+        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(mp3_filename, 'rb'), caption=f"Artist: {artist_name}\nTrack: {track_name}\nAlbum: {album_name}")
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id, text="I couldn't find any songs matching your query.")
 
@@ -160,9 +164,14 @@ def main():
     application.add_handler(recognize_song_handler)
     application.add_handler(search_song_handler)
 
+    # Register an error handler
+    def error_handler(update: Update, context: CallbackContext):
+        logger.error(f"Update {update} caused error {context.error}")
+
+    application.add_error_handler(error_handler)
+
     application.run_polling()
     application.idle()
 
 if __name__ == '__main__':
     main()
-
