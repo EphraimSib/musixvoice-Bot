@@ -26,10 +26,12 @@ TOKEN = '7306844635:AAFCDEaQaowEHtUBGuyEbcgGUPmrAw8T-GA'
 
 def start(update: Update, context: CallbackContext):
     """Send a message when the command /start is issued."""
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a music recognition bot! Send me a voice message, and I'll try to recognize the song.")
+    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a music recognition bot! Send me a voice message, and I'll try to recognize the song. Or use /search <query> to search for a song by text.")
 
 async def recognize_song(update: Update, context: CallbackContext):
     """Recognize the song in the voice message."""
+    
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Recognizing the song...")
     file_id = update.message.voice.file_id
     file = await context.bot.get_file(file_id)
     file_path = file.file_path
@@ -113,6 +115,8 @@ async def recognize_song(update: Update, context: CallbackContext):
 
 async def search_song(update: Update, context: CallbackContext):
     """Search for a song on Spotify."""
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Searching for the song...")
     search_query = update.message.text.split(' ', 1)[1]
     results = sp.search(q=search_query, type='track')
     if results['tracks']['total'] > 0:
@@ -159,10 +163,12 @@ def main():
     start_handler = CommandHandler('start', start)
     recognize_song_handler = MessageHandler(filters.VOICE, recognize_song)
     search_song_handler = MessageHandler(filters.TEXT & ~filters.COMMAND, search_song)
+    search_command_handler = CommandHandler('search', search_song)
 
     application.add_handler(start_handler)
     application.add_handler(recognize_song_handler)
     application.add_handler(search_song_handler)
+    application.add_handler(search_command_handler)
 
     # Register an error handler
     def error_handler(update: Update, context: CallbackContext):
