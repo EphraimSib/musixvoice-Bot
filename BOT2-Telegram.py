@@ -24,9 +24,10 @@ sp = Spotify(client_credentials_manager=client_credentials_manager)
 # Set up your Telegram bot token
 TOKEN = '7306844635:AAFCDEaQaowEHtUBGuyEbcgGUPmrAw8T-GA'
 
-def start(update: Update, context: CallbackContext):
+async def start(update: Update, context: CallbackContext):
     """Send a message when the command /start is issued."""
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a music recognition bot! Send me a voice message, and I'll try to recognize the song. Or use /search <query> to search for a song by text.")
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a music recognition bot! Send me a voice message, and I'll try to recognize the song. Or sent me a text to search for a song.")
 
 async def recognize_song(update: Update, context: CallbackContext):
     """Recognize the song in the voice message."""
