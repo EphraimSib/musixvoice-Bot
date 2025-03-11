@@ -14,15 +14,14 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Set up your Spotify API credentials
-client_id = 'f82b3bb5008e449b83832ba241b30ef7'
-client_password = '0c87e84a36aa41079f0df8886bd9795b'
-
+client_id = ''
+client_password = ''
 # Set up your Spotify client
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_password)
 sp = Spotify(client_credentials_manager=client_credentials_manager)
 
 # Set up your Telegram bot token
-TOKEN = '7306844635:AAFCDEaQaowEHtUBGuyEbcgGUPmrAw8T-GA'
+TOKEN = ''
 
 async def start(update: Update, context: CallbackContext):
     """Send a message when the command /start is issued."""
